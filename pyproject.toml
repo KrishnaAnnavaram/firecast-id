@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "firecast-id"
+version = "0.1.0"
+description = "Forecast Indonesian wildfire hotspots with LSTM, attention and Transformers"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Krishna Annavaram" }]
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26", "pandas>=2.1", "scikit-learn>=1.4", "scipy>=1.11"]
+
+[project.optional-dependencies]
+deep = ["torch>=2.2"]
+dev = ["pytest>=8"]
+
+[project.scripts]
+firecast = "firecast_id.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+filterwarnings = ["ignore:Could not find the number of physical cores:UserWarning"]
