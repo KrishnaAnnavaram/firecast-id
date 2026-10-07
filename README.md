@@ -9,7 +9,7 @@
 ![Horizons](https://img.shields.io/badge/Horizons-1%2C_7%2C_14%2C_30_days-1F3864?style=for-the-badge)
 ![Models](https://img.shields.io/badge/Models-3_baselines_%2B_3-2E5FD9?style=for-the-badge)
 ![Test](https://img.shields.io/badge/Significance-Diebold--Mariano-6E86E8?style=for-the-badge)
-![Tests](https://img.shields.io/badge/Tests-51_passing-3DA35B?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-50_passing-3DA35B?style=for-the-badge)
 ![Offline demo](https://img.shields.io/badge/Offline_demo-Yes-F5C542?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-A0399B?style=for-the-badge)
 
@@ -100,7 +100,7 @@ firecast-id gives each of these questions its own component. The same code does 
 | Providers | NASA FIRMS API (optional, needs `FIRMS_MAP_KEY`) |
 | Offline mode | Everything except `firecast fetch`. A synthetic generator feeds the demo and the tests |
 | Safety | Each feature reads days on or before the origin only. Tuning never reads the test year |
-| Tests | **51** unit tests (`pytest`). In CI, 50 pass and 1 skips (the LSTM test needs PyTorch) |
+| Tests | **50** unit tests pass in CI (`pytest`), 1 skips without the `deep` extra (PyTorch). With the extra: 51 pass |
 
 ```mermaid
 flowchart LR
@@ -149,7 +149,7 @@ firecast-id/
 ├── data/README.md             # sources, terms, columns, download steps (no data files)
 ├── docs/ste-style-guide.md    # writing rules and project vocabulary
 ├── src/firecast_id/           # the package (one module per component, see 2.1)
-├── tests/                     # 51 offline tests on synthetic data
+├── tests/                     # 51 offline tests on synthetic data (1 needs PyTorch)
 ├── .env.example               # variable names only
 ├── pyproject.toml             # dependencies, extras, the firecast command
 └── LICENSE                    # MIT
@@ -453,8 +453,8 @@ The settings come from the environment and from a local `.env` file. An environm
 
 | Validation | Result | Command |
 |---|---|---|
-| Unit tests (with PyTorch) | **51 passed** | `pytest -q` |
-| Unit tests in CI (no PyTorch) | **50 passed, 1 skipped** | `pytest -q` |
+| Unit tests (CI installs only `.[dev]`) | **50 passed, 1 skipped** (the LSTM test needs the `deep` extra) | `pytest -q` |
+| Unit tests with the `deep` extra (PyTorch) | **51 passed** | `pytest -q` |
 | Backtest on synthetic data | See the tables below | `firecast demo` |
 
 The demo uses synthetic data from 2012 to 2023 (seed 42) with the synthetic climate file. Test years are 2021, 2022 and 2023, so each model has 1,095 scored days per horizon. **These numbers are synthetic.** They show that the pipeline works. They do not show the accuracy on FIRMS data.
@@ -494,7 +494,7 @@ Read these problems before you use firecast-id for decisions.
 |---|---|---|---|
 | 1 | Data | Results on FIRMS data are not reproduced in CI, because the data is not in the repository. | Run `firecast build-series` and `firecast backtest` on FIRMS data before you trust a model. |
 | 2 | Zero days | A day with no detection can also be a day with cloud cover or no satellite pass. | Low counts in the wet season are not only low fire activity. |
-| 3 | Models | The attention LSTM and the Transformer of the prototype are not rebuilt yet. | Add them through `deep.py`. Keep them only if they beat the baselines in the DM test. |
+| 3 | Models | The attention LSTM and the Transformer of the prototype are not in this repository. | Add them through `deep.py`. Keep them only if they beat the baselines in the DM test. |
 | 4 | Models | No SARIMAX or ETS model is included. | Add one as a `Forecaster` (Section 11). |
 | 5 | Climate | The demo uses a synthetic climate file. Real ONI, DMI or rainfall values are not bundled. | Download them (see `data/README.md`) and set `FIRECAST_CLIMATE`. |
 | 6 | Uncertainty | The models give expected counts only, with no prediction interval. | Use the Poisson deviance and the DM tests to compare models. Add quantile models for intervals. |
